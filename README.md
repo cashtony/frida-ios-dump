@@ -48,3 +48,63 @@ network_setting.html                          100% 1819   404.9KB/s   00:00
 congratulations!!! You've got a decrypted ipa file.
 
 Drag to [MonkeyDev](https://github.com/AloneMonkey/MonkeyDev), Happy hacking!
+
+
+
+# Q&A
+
+- [exceptions.UnicodeDecodeError](http://iosre.com/t/failed-to-spawn-unable-to-launch-ios-app-timeout/10422/11)
+```
+114  		print "start dump target app......"
+115  		session = device.attach(name);
+116  		script = loadJsFile(session, DUMP_JS);
+117  		script.post("dump");
+118  		finished.wait();
+(Pdb) s
+--Return--
+> /Users/devzkn/Downloads/kevin－software/ios-Reverse_Engineering/frida-ios-dump-master/dump.py(113)main()->None
+-> createDir(os.getcwd()+"/"+OUTPUT)
+(Pdb) l
+108  		script = loadJsFile(session, APP_JS);
+109  		name = target.decode('utf8');
+110  		script.post(name);
+111  		opened.wait();
+112  		session.detach();
+113  ->		createDir(os.getcwd()+"/"+OUTPUT)
+114  		print "start dump target app......"
+115  		session = device.attach(name);
+116  		script = loadJsFile(session, DUMP_JS);
+117  		script.post("dump");
+118  		finished.wait();
+(Pdb) s
+UnicodeDecodeError: UnicodeD...ge(128)')
+> /Users/devzkn/Downloads/kevin－software/ios-Reverse_Engineering/frida-ios-dump-master/dump.py(127)<module>()
+-> main(sys.argv[1])
+(Pdb) l
+122  		if len(sys.argv) < 2:
+123  			print "usage: ./dump.py 微信"
+124  			sys.exit(0)
+125  		else:
+126  			try:
+127  ->				main(sys.argv[1])
+128  			except KeyboardInterrupt:
+129  				if session:
+130  					session.detach()
+131  				sys.exit()
+132  			except:
+(Pdb) s
+> /Users/devzkn/Downloads/kevin－software/ios-Reverse_Engineering/frida-ios-dump-master/dump.py(128)<module>()
+-> except KeyboardInterrupt:
+(Pdb) pp UnicodeDecodeError
+<type 'exceptions.UnicodeDecodeError'>
+```
+
+解决方案是，确保frida-ios-dump-master 放在能UnicodeDecode成功的路径。最好是英文半角。
+
+ps:因为py 加载的js 采用是相对路径，因此必须保证dump.py 能找到它们。
+```
+DUMP_JS = './dump.js'
+APP_JS = './app.js'
+```
+
+
