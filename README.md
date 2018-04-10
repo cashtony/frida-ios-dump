@@ -5,6 +5,12 @@ pull decrypted ipa from jailbreak device
 
 ## 1. install [frida](http://www.frida.re/) on device and mac
 
+- [device](https://zhangkn.github.io/2017/12/frida/#gsc.tab=0)
+```
+Start Cydia and add Frida’s repository by navigating to Manage -> Sources -> Edit -> Add and entering https://build.frida.re
+
+```
+
 ## 2. iproxy 2222 22
 
 ## 3. ./dump.py 微信
